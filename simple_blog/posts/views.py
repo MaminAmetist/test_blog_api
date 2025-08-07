@@ -10,6 +10,13 @@ from .serializers import (
     CommentCreateUpdateSerializer
 )
 
+from rest_framework.permissions import (
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
+
+from .permissions import IsOwnerOrReadOnly
+
 from .models import Post
 from .models import Comment
 
@@ -23,6 +30,7 @@ class CreatePostAPIView(CreateAPIView):
     """
 
     serializer_class = PostCreateUpdateSerializer
+    permission_classes = [IsAuthenticated, ]
 
     def post(self, request, *args, **kwargs):
         serializer = PostCreateUpdateSerializer(data=request.data)
@@ -41,6 +49,7 @@ class ListPostAPIView(ListAPIView):
 
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class DetailPostAPIView(RetrieveUpdateDestroyAPIView):
@@ -62,6 +71,7 @@ class DetailPostAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     lookup_field = "slug"
     serializer_class = PostDetailSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
 
 class ListCommentAPIView(CreateAPIView):
@@ -72,6 +82,7 @@ class ListCommentAPIView(CreateAPIView):
 
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, slug):
         post = Post.objects.get(slug=slug)
@@ -90,6 +101,7 @@ class CreateCommentAPIView(CreateAPIView):
     """
 
     serializer_class = CommentCreateUpdateSerializer
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, slug, *args, **kwargs):
         post = get_object_or_404(Post, slug=slug)
@@ -122,6 +134,7 @@ class DetailCommentAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     lookup_fields = ["parent", "id"]
     serializer_class = CommentCreateUpdateSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def get_object(self):
         queryset = self.get_queryset()  # Get the base queryset
