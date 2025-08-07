@@ -11,6 +11,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     body = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    # comments = models.ForeignKey(Comment, on_delete=models.CASCADE())
     description = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
@@ -41,3 +42,14 @@ def pre_save_post_receiver(sender, instance, *args, **kwargs):
 
 
 pre_save.connect(pre_save_post_receiver, sender=Post)
+
+
+class Comment(models.Model):
+    parent = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    class Meta:
+        ordering = ['created_at']
