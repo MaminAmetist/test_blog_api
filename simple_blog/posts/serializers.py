@@ -39,10 +39,15 @@ class PostCreateUpdateSerializer(serializers.ModelSerializer):
 
 
 class PostListSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField(read_only=True)
+
+
     class Meta:
         model = Post
         fields = [
             "id",
+            "url",
             "title",
             "author",
             "image",
@@ -54,10 +59,14 @@ class PostListSerializer(serializers.ModelSerializer):
         qs = Comment.objects.filter(parent=obj).count()
         return qs
 
+    def get_url(self, obj):
+        return obj.get_api_url()
+
 
 class PostDetailSerializer(serializers.ModelSerializer):
     slug = serializers.SerializerMethodField(read_only=True)
     author = serializers.PrimaryKeyRelatedField(read_only=True)
+    comments = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Post

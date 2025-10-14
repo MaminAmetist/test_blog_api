@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import pre_save
+from django.urls import reverse
 from django.utils.text import slugify
 
 User = get_user_model()
@@ -11,7 +12,6 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     body = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    # comments = models.ForeignKey(Comment, on_delete=models.CASCADE())
     description = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
@@ -22,6 +22,17 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['created_at']
+
+    def get_api_url(self):
+
+        try:
+            return reverse('post_api:post_delail', kwargs={'slug': self.slug})
+        except:
+            None
+
+    def get_comments(self, obj):
+        gs = Comment.objects.filter(parent=obj).count()
+        return gs
 
 
 def create_slug(instance, new_slug=None):
@@ -45,7 +56,7 @@ pre_save.connect(pre_save_post_receiver, sender=Post)
 
 
 class Comment(models.Model):
-    parent = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    parent = models.ForeignKey(Post, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.TextField()
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)

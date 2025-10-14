@@ -30,7 +30,7 @@ class CreatePostAPIView(CreateAPIView):
     """
 
     serializer_class = PostCreateUpdateSerializer
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = PostCreateUpdateSerializer(data=request.data)
@@ -128,8 +128,6 @@ class DetailCommentAPIView(RetrieveUpdateDestroyAPIView):
 
         parameters: [parent, author, body]
     """
-
-    # permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     queryset = Comment.objects.all()
     lookup_fields = ["parent", "id"]
