@@ -57,6 +57,7 @@ REST API для блога на Python (Django + DRF)
 
 
 API будет доступен по адресу http://localhost:8000/
+
 Текущая версия доступна по адресу https://test-blog-api-m71h.onrender.com
 
 5. Запуск Flask версии
@@ -72,6 +73,7 @@ API будет доступен по адресу http://localhost:8000/
         flask run
 
 API будет доступен по адресу http://localhost:5000/
+
 Текущая версия доступна по адресу https://test-blog-api-flask.onrender.com
 
 ✅ Требования / зависимости
