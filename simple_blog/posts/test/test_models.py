@@ -1,0 +1,18 @@
+from django.contrib.auth.models import User
+from django.test import TestCase
+
+from posts.models import Post
+
+
+class PostTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('foo@bar.com',
+                                             first_name='Иван',
+                                             last_name='Иванов')
+        self.post = Post.objects.create(title='пост3', body='текст',
+                                        author=self.user)
+
+    def test_str_post(self):
+        expected = 'пост3'
+        result = str(self.post)
+        self.assertEqual(result, expected)
